@@ -1,27 +1,46 @@
 'use client';
 
-export default function HindiExplanation({ explanation, demoMode }: { explanation: string, demoMode: boolean }) {
-  if (!explanation) return null;
+interface Props {
+  explanation: string;
+  demoMode: boolean;
+}
 
+export default function HindiExplanation({ explanation, demoMode }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-slate-800">🗣️ Explanation in Hindi / हिंदी में व्याख्या</h2>
+    <div className="bg-amber-50/70 rounded-2xl shadow-sm border border-amber-200/80 p-6 sm:p-8 space-y-4">
+      
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-amber-200/80 pb-3">
+        <h2 className="text-xl font-bold text-amber-950 flex items-center gap-2">
+          <span>🗣️ Advisory Explanation in Hindi</span>
+          <span className="text-xs font-semibold text-amber-800">/ हिंदी में सरल व्याख्या</span>
+        </h2>
+
         {demoMode && (
-          <span className="bg-purple-100 text-purple-800 border border-purple-200 px-2 py-1 text-xs font-semibold rounded">
-            DEMO MODE
+          <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-900 border border-indigo-200">
+            DEMO EXPLANATION
           </span>
         )}
       </div>
-      
-      <div className="bg-slate-50 p-5 rounded-md border border-slate-100 mb-4">
-        <p className="text-slate-800 text-lg leading-relaxed whitespace-pre-wrap">{explanation}</p>
+
+      {/* Explanation Text */}
+      <div className="bg-white p-5 rounded-xl border border-amber-200/60 text-stone-900 text-sm sm:text-base leading-relaxed whitespace-pre-line font-medium shadow-2xs">
+        {explanation}
       </div>
-      
-      <div className="bg-slate-100 p-3 rounded text-xs text-slate-500 border border-slate-200">
-        <p>यह व्याख्या AI द्वारा तैयार की गई है। सभी आंकड़े नियम-आधारित गणना से हैं।</p>
-        <p>This explanation is prepared by AI. All figures are from rule-based calculations.</p>
+
+      {/* Disclaimer Box */}
+      <div className="bg-amber-100/60 p-3.5 rounded-lg border border-amber-200 text-xs text-amber-900 flex items-start gap-2.5">
+        <span className="text-base leading-none">⚠️</span>
+        <div>
+          <p className="font-bold">
+            यह व्याख्या AI (Gemini) द्वारा तैयार की गई है। सभी वित्तीय आंकड़े नियम-आधारित गणना से हैं।
+          </p>
+          <p className="mt-0.5 opacity-90">
+            This natural language explanation is synthesized by AI for advisory clarity. All underlying financial figures are computed deterministically.
+          </p>
+        </div>
       </div>
+
     </div>
   );
 }

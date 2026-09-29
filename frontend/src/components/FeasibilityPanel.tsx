@@ -1,76 +1,134 @@
 'use client';
 
 import { FeasibilityAnalysis } from '@/lib/types';
-import { getConfidenceBadge, getRatingColor } from '@/lib/format';
+import { getRatingPill, getConfidenceBadge } from '@/lib/format';
 
-export default function FeasibilityPanel({ feasibility }: { feasibility: FeasibilityAnalysis }) {
-  
-  const IndicatorCard = ({ title, indicator, goodIsLow = false }: { title: string, indicator: any, goodIsLow?: boolean }) => {
-    let colorClass = getRatingColor(indicator.rating);
-    if (goodIsLow) {
-      if (indicator.rating === 'LOW') colorClass = 'text-green-700 font-medium';
-      else if (indicator.rating === 'HIGH') colorClass = 'text-red-700 font-medium';
-    }
-    
-    return (
-      <div className="bg-slate-50 border border-slate-200 p-4 rounded-md">
-        <h3 className="text-sm font-semibold text-slate-600 mb-2">{title}</h3>
-        <div className="flex items-center gap-2 mb-2">
-          <span className={`text-lg ${colorClass}`}>{indicator.rating}</span>
-          <span className={`px-2 py-0.5 text-[10px] rounded border ${getConfidenceBadge(indicator.confidence)}`}>
-            {indicator.confidence}
-          </span>
-        </div>
-        <p className="text-sm text-slate-700">{indicator.evidence}</p>
-      </div>
-    );
-  };
+interface Props {
+  feasibility: FeasibilityAnalysis;
+}
 
+export default function FeasibilityPanel({ feasibility }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-      <h2 className="text-xl font-semibold text-slate-800 mb-6">📊 Business Feasibility / व्यवसाय व्यवहार्यता</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <IndicatorCard title="Local Fit / स्थानीय उपयुक्तता" indicator={feasibility.local_fit} />
-        <IndicatorCard title="Opportunity / अवसर" indicator={feasibility.opportunity} />
-        <IndicatorCard title="Competition / प्रतिस्पर्धा" indicator={feasibility.competition} goodIsLow={true} />
+    <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-6 sm:p-8 space-y-6">
+      
+      {/* Header */}
+      <div className="border-b border-stone-200 pb-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-stone-900">
+          📊 Qualitative Business Feasibility Analysis
+        </h2>
+        <p className="text-xs text-stone-500 mt-1">
+          Evaluates local product-market fit, market gap opportunity, direct local competition, and environmental risks without fake percentages.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Risk Factors</h3>
-          {feasibility.risks.length > 0 ? (
-            <ul className="space-y-3">
-              {feasibility.risks.map((risk, i) => (
-                <li key={i} className="flex flex-col bg-white border border-slate-100 p-3 rounded">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-slate-800 text-sm">{risk.factor}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded font-medium ${
-                      risk.severity === 'HIGH' ? 'bg-red-100 text-red-800' : 
-                      risk.severity === 'MEDIUM' ? 'bg-amber-100 text-amber-800' : 
-                      'bg-slate-100 text-slate-800'
-                    }`}>{risk.severity}</span>
-                  </div>
-                  <span className="text-sm text-slate-600">{risk.evidence}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-slate-500">No significant risks identified.</p>
-          )}
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Data Limitations</h3>
-          <div className="bg-slate-100 p-4 rounded-md border border-slate-200">
-            <ul className="list-disc pl-4 space-y-1">
-              {feasibility.limitations.map((lim, i) => (
-                <li key={i} className="text-sm text-slate-600">{lim}</li>
-              ))}
-            </ul>
+      {/* 3 Main Indicator Scorecards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        {/* Local Fit */}
+        <div className="bg-stone-50 rounded-xl p-5 border border-stone-200 flex flex-col justify-between space-y-3">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">Local Fit / स्थानीय उपयुक्तता</span>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs ${getRatingPill(feasibility.local_fit.rating)}`}>
+                {feasibility.local_fit.rating}
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-stone-800 leading-snug">
+              {feasibility.local_fit.evidence}
+            </p>
+          </div>
+          <div className="pt-2 border-t border-stone-200/80 flex justify-between items-center text-xs">
+            <span className="text-stone-400">Confidence</span>
+            <span className={`px-2 py-0.5 rounded text-[10px] ${getConfidenceBadge(feasibility.local_fit.confidence)}`}>
+              {feasibility.local_fit.confidence}
+            </span>
           </div>
         </div>
+
+        {/* Opportunity */}
+        <div className="bg-stone-50 rounded-xl p-5 border border-stone-200 flex flex-col justify-between space-y-3">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">Market Opportunity / अवसर</span>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs ${getRatingPill(feasibility.opportunity.rating)}`}>
+                {feasibility.opportunity.rating}
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-stone-800 leading-snug">
+              {feasibility.opportunity.evidence}
+            </p>
+          </div>
+          <div className="pt-2 border-t border-stone-200/80 flex justify-between items-center text-xs">
+            <span className="text-stone-400">Confidence</span>
+            <span className={`px-2 py-0.5 rounded text-[10px] ${getConfidenceBadge(feasibility.opportunity.confidence)}`}>
+              {feasibility.opportunity.confidence}
+            </span>
+          </div>
+        </div>
+
+        {/* Competition */}
+        <div className="bg-stone-50 rounded-xl p-5 border border-stone-200 flex flex-col justify-between space-y-3">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">Local Competition / प्रतिस्पर्धा</span>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs ${getRatingPill(feasibility.competition.rating)}`}>
+                {feasibility.competition.rating}
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-stone-800 leading-snug">
+              {feasibility.competition.evidence}
+            </p>
+          </div>
+          <div className="pt-2 border-t border-stone-200/80 flex justify-between items-center text-xs">
+            <span className="text-stone-400">Confidence</span>
+            <span className={`px-2 py-0.5 rounded text-[10px] ${getConfidenceBadge(feasibility.competition.confidence)}`}>
+              {feasibility.competition.confidence}
+            </span>
+          </div>
+        </div>
+
       </div>
+
+      {/* Risks & Limitations Split Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+        
+        {/* Identified Risks */}
+        <div className="bg-rose-50/50 rounded-xl p-5 border border-rose-200/80 space-y-3">
+          <h3 className="text-xs font-bold text-rose-900 uppercase tracking-wider flex items-center gap-1.5">
+            <span>⚠️ Identified Risk Factors ({feasibility.risks.length})</span>
+          </h3>
+          <div className="space-y-2 text-xs">
+            {feasibility.risks.map((r, idx) => (
+              <div key={idx} className="bg-white p-3 rounded-lg border border-rose-200 flex items-start justify-between gap-3 shadow-2xs">
+                <div>
+                  <span className="font-bold text-stone-900 block">{r.factor}</span>
+                  <span className="text-stone-600 mt-0.5 block">{r.evidence}</span>
+                </div>
+                <span className="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold uppercase text-[10px]">
+                  {r.severity}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Honest Limitations Callout */}
+        <div className="bg-stone-50 rounded-xl p-5 border border-stone-200 space-y-3">
+          <h3 className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
+            <span>ℹ️ Dataset & Mapping Limitations</span>
+          </h3>
+          <ul className="space-y-2 text-xs text-stone-600">
+            {feasibility.limitations.map((lim, idx) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span className="text-stone-400">•</span>
+                <span>{lim}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
+
     </div>
   );
 }

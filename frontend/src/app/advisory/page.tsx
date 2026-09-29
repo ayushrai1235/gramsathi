@@ -41,7 +41,7 @@ export default function AdvisoryPage() {
   };
 
   const handleLoadDemo = async (scenarioId: string) => {
-    // handled inside InputForm state already, user will just click Analyze
+    // handled in InputForm component state
   };
 
   const handleRecalculate = async (modifiedInput: UserInput) => {
@@ -69,14 +69,16 @@ export default function AdvisoryPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-16">
+    <div className="max-w-4xl mx-auto space-y-8 pb-16">
       
       {error && (
-        <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded shadow-sm">
-          <p className="text-red-800 font-medium">{error}</p>
+        <div className="bg-rose-50 border-l-4 border-rose-600 p-4 rounded-xl shadow-xs text-xs">
+          <p className="font-bold text-rose-900">Analysis Request Failed</p>
+          <p className="text-rose-800 mt-0.5">{error}</p>
         </div>
       )}
 
+      {/* Input Form Section */}
       <div className={analysisResult ? 'hidden print:hidden' : 'block'}>
         <InputForm 
           onSubmit={handleAnalyze} 
@@ -85,15 +87,26 @@ export default function AdvisoryPage() {
         />
       </div>
 
+      {/* Analysis Results Display */}
       {analysisResult && formInput && (
-        <div ref={resultsRef} className="space-y-6 pt-4 animate-in fade-in duration-500">
+        <div ref={resultsRef} className="space-y-8 pt-2 animate-in fade-in duration-500">
           
-          <div className="flex justify-end print:hidden">
+          {/* Action Navigation Bar */}
+          <div className="bg-stone-900 text-white p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md print:hidden">
+            <div>
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block">
+                Enterprise Advisory Dossier / मूल्यांकन परिणाम
+              </span>
+              <span className="text-sm font-bold text-stone-100">
+                {formInput.business_idea} — {formInput.location}
+              </span>
+            </div>
+
             <button 
               onClick={handleReset}
-              className="text-sm font-medium text-slate-500 hover:text-slate-800 underline"
+              className="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold rounded-lg border border-stone-700 transition-colors self-start sm:self-auto"
             >
-              Start New Advisory Analysis
+              ← Start New Appraisal / नया मूल्यांकन
             </button>
           </div>
 

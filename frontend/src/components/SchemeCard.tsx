@@ -1,78 +1,122 @@
 'use client';
 
 import { MatchedScheme } from '@/lib/types';
-import { getConfidenceBadge } from '@/lib/format';
+import { formatINR, getConfidenceBadge } from '@/lib/format';
 
-export default function SchemeCard({ schemes }: { schemes: MatchedScheme[] }) {
-  if (!schemes || schemes.length === 0) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-        <h2 className="text-xl font-semibold text-slate-800 mb-4">🏛️ Government Schemes / सरकारी योजनाएँ</h2>
-        <p className="text-slate-600">No matching schemes found for this profile.</p>
-      </div>
-    );
-  }
+interface Props {
+  schemes: MatchedScheme[];
+}
 
+export default function SchemeCard({ schemes }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-      <h2 className="text-xl font-semibold text-slate-800 mb-6">🏛️ Government Schemes / सरकारी योजनाएँ</h2>
+    <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-6 sm:p-8 space-y-6">
       
-      <div className="space-y-6">
-        {schemes.map((scheme) => (
-          <div key={scheme.id} className="border border-blue-100 rounded-lg overflow-hidden">
-            <div className="bg-blue-50 px-5 py-4 border-b border-blue-100 flex flex-col md:flex-row md:items-center justify-between">
-              <div>
-                <h3 className="font-bold text-blue-900 text-lg">{scheme.name}</h3>
-                <p className="text-sm text-blue-700">{scheme.name_hi}</p>
+      {/* Header */}
+      <div className="border-b border-stone-200 pb-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-stone-900 flex items-center gap-2">
+          <span>🏛️ Government Credit Schemes Matched</span>
+          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+            Rule-Based Versioned Data
+          </span>
+        </h2>
+        <p className="text-xs text-stone-500 mt-1">
+          Matched from official government scheme tables based on enterprise cost boundaries and promoter margin eligibility.
+        </p>
+      </div>
+
+      {schemes.length === 0 ? (
+        <div className="p-6 bg-stone-50 border border-stone-200 rounded-xl text-center text-stone-600 text-sm">
+          No matching government scheme found for the given project cost range.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {schemes.map((s) => (
+            <div 
+              key={s.id}
+              className="bg-stone-50/70 hover:bg-stone-50 rounded-xl p-6 border border-stone-200 shadow-2xs transition-all space-y-5"
+            >
+              {/* Card Top Title & Badges */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200/80 pb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-stone-900">{s.name}</h3>
+                    <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${getConfidenceBadge(s.confidence)}`}>
+                      {s.confidence}
+                    </span>
+                  </div>
+                  <p className="text-xs text-emerald-800 font-semibold mt-0.5">{s.name_hi}</p>
+                </div>
+
+                <div className="text-left sm:text-right">
+                  <span className="text-[10px] text-stone-400 uppercase font-semibold block">Max Eligible Loan</span>
+                  <span className="text-xl font-extrabold text-emerald-800">{formatINR(s.eligible_loan)}</span>
+                </div>
               </div>
-              <span className={`mt-2 md:mt-0 px-3 py-1 text-xs font-medium rounded-full border ${getConfidenceBadge(scheme.confidence)}`}>
-                {scheme.confidence} CONFIDENCE
-              </span>
-            </div>
-            
-            <div className="p-5">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-5">
-                <div>
-                  <p className="text-xs text-slate-500 uppercase">Eligible Loan</p>
-                  <p className="font-semibold text-slate-800">Up to ₹{(scheme.eligible_loan / 100000).toFixed(1)}L</p>
+
+              {/* Scheme Key Parameters Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                <div className="bg-white p-3 rounded-lg border border-stone-200">
+                  <span className="text-stone-400 block font-medium">Interest Rate (p.a.)</span>
+                  <span className="text-stone-900 font-bold text-sm mt-0.5 block">
+                    {s.interest_rate_pct !== null ? `${s.interest_rate_pct}%` : (
+                      <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded text-xs font-semibold border border-amber-200">
+                        Unverified Rate
+                      </span>
+                    )}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500 uppercase">Interest Rate</p>
-                  {scheme.interest_rate_pct === null ? (
-                    <p className="font-semibold text-amber-600 text-sm">असत्यापित / Unverified</p>
-                  ) : (
-                    <p className="font-semibold text-slate-800">{scheme.interest_rate_pct}% p.a.</p>
-                  )}
+
+                <div className="bg-white p-3 rounded-lg border border-stone-200">
+                  <span className="text-stone-400 block font-medium">Max Tenure</span>
+                  <span className="text-stone-900 font-bold text-sm mt-0.5 block">
+                    {s.tenure_months ? `${s.tenure_months / 12} Years (${s.tenure_months}m)` : 'N/A'}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500 uppercase">Tenure</p>
-                  <p className="font-semibold text-slate-800">{scheme.tenure_months} months</p>
+
+                <div className="bg-white p-3 rounded-lg border border-stone-200">
+                  <span className="text-stone-400 block font-medium">Moratorium Period</span>
+                  <span className="text-stone-900 font-bold text-sm mt-0.5 block">
+                    {s.moratorium_months} Months
+                  </span>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500 uppercase">Moratorium</p>
-                  <p className="font-semibold text-slate-800">{scheme.moratorium_months} months</p>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 uppercase">Repayment</p>
-                  <p className="font-semibold text-slate-800 capitalize">{scheme.repayment_frequency}</p>
+
+                <div className="bg-white p-3 rounded-lg border border-stone-200">
+                  <span className="text-stone-400 block font-medium">Repayment Frequency</span>
+                  <span className="text-stone-900 font-bold text-sm mt-0.5 block uppercase">
+                    {s.repayment_frequency}
+                  </span>
                 </div>
               </div>
-              
-              <div className="bg-slate-50 p-4 rounded text-sm text-slate-700 mb-4 border border-slate-100">
-                <span className="font-medium text-slate-900">Eligibility Notes: </span>
-                {scheme.eligibility_notes}
+
+              {/* Eligibility Notes */}
+              <div className="text-xs text-stone-700 bg-white p-3.5 rounded-lg border border-stone-200">
+                <span className="font-bold text-stone-900 block mb-1">Eligibility Criteria & Guidelines:</span>
+                <p>{s.eligibility_notes}</p>
               </div>
-              
-              <div className="text-xs text-slate-500 flex justify-between items-center">
-                <span>Verified on: {scheme.verification_date}</span>
-                <a href={scheme.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  View Official Source →
+
+              {/* Traceability & Source Footer */}
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-stone-500 pt-2 border-t border-stone-200/80">
+                <div className="flex items-center gap-2">
+                  <span>Source Verification Date:</span>
+                  <span className="font-semibold text-stone-700">{s.verification_date}</span>
+                </div>
+
+                <a 
+                  href={s.source_url} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="text-emerald-800 hover:text-emerald-900 font-bold underline flex items-center gap-1"
+                >
+                  <span>Official Policy Document</span>
+                  <span>↗</span>
                 </a>
               </div>
+
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }

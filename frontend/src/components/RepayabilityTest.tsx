@@ -45,125 +45,177 @@ export default function RepayabilityTest({ repayability, currentInput, onRecalcu
   const isWarning = repayability.verdict === 'HIGH_RISK' || repayability.verdict === 'NOT_VIABLE';
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-      <h2 className="text-xl font-semibold text-slate-800 mb-6">🛡️ Repayability Stress Test / भुगतान तनाव परीक्षण</h2>
+    <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-6 sm:p-8 space-y-8">
+      
+      {/* Header */}
+      <div className="border-b border-stone-200 pb-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-stone-900 flex items-center gap-2">
+          <span>🛡️ Repayability Stress Test</span>
+          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
+            Core Assessment Module
+          </span>
+        </h2>
+        <p className="text-xs text-stone-500 mt-1">
+          Evaluates projected business operating surplus against debt repayment burden across base and sensitivity stress scenarios.
+        </p>
+      </div>
 
-      <div className={`p-6 rounded-lg border-2 text-center mb-8 ${getVerdictColor(repayability.verdict)}`}>
-        <h3 className="text-2xl font-bold mb-2">{getVerdictLabel(repayability.verdict)}</h3>
-        <p className="text-sm opacity-90">{repayability.recommendation}</p>
+      {/* Main Verdict Hero Banner */}
+      <div className={`p-6 sm:p-8 rounded-2xl border-2 text-center transition-all ${getVerdictColor(repayability.verdict)}`}>
+        <div className="inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-white/70 border border-current mb-3">
+          Repayability Status Verdict / ऋण भुगतान स्थिति
+        </div>
         
+        <h3 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
+          {getVerdictLabel(repayability.verdict)}
+        </h3>
+
+        <p className="text-sm font-medium opacity-90 max-w-2xl mx-auto">
+          {repayability.recommendation}
+        </p>
+        
+        {/* MANDATORY HIGH RISK WARNING BANNER */}
         {isWarning && (
-          <div className="mt-4 bg-red-100 text-red-800 py-2 px-4 rounded text-sm font-semibold border border-red-200">
-            ऋण कम करें या व्यवसाय योजना में बदलाव करें / Reduce loan or modify business plan
+          <div className="mt-6 bg-rose-600 text-white py-3.5 px-6 rounded-xl text-sm font-black tracking-wide shadow-md border border-rose-700 animate-pulse">
+            ⚠️ ऋण कम करें या व्यवसाय योजना में बदलाव करें / Reduce loan or modify business plan
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 bg-slate-50 p-4 rounded-md border border-slate-200">
+      {/* Key Metrics Strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-stone-50 p-4 rounded-xl border border-stone-200">
         <div>
-          <p className="text-xs text-slate-500 uppercase mb-1">Monthly Surplus</p>
-          <p className="font-semibold text-lg">{formatINR(repayability.monthly_surplus)}</p>
+          <span className="text-[10px] text-stone-400 font-bold uppercase block">Monthly Surplus</span>
+          <span className="font-extrabold text-base sm:text-lg text-stone-900">{formatINR(repayability.monthly_surplus)}</span>
         </div>
+
         <div>
-          <p className="text-xs text-slate-500 uppercase mb-1">Quarterly Surplus</p>
-          <p className="font-semibold text-lg">{formatINR(repayability.quarterly_surplus)}</p>
+          <span className="text-[10px] text-stone-400 font-bold uppercase block">Quarterly Surplus</span>
+          <span className="font-extrabold text-base sm:text-lg text-stone-900">{formatINR(repayability.quarterly_surplus)}</span>
         </div>
+
         <div>
-          <p className="text-xs text-slate-500 uppercase mb-1">Quarterly EMI</p>
-          <p className="font-semibold text-lg">{formatINR(repayability.quarterly_emi)}</p>
+          <span className="text-[10px] text-stone-400 font-bold uppercase block">Quarterly EMI</span>
+          <span className="font-extrabold text-base sm:text-lg text-stone-900">{formatINR(repayability.quarterly_emi)}</span>
         </div>
+
         <div>
-          <p className="text-xs text-slate-500 uppercase mb-1">Repayment Ratio</p>
-          <p className={`font-semibold text-lg ${repayability.repayment_ratio > 0.6 ? 'text-red-600' : 'text-slate-800'}`}>
+          <span className="text-[10px] text-stone-400 font-bold uppercase block">Repayment Burden Ratio</span>
+          <span className={`font-extrabold text-base sm:text-lg ${repayability.repayment_ratio > 0.6 ? 'text-rose-700' : 'text-emerald-800'}`}>
             {formatRatio(repayability.repayment_ratio)}
-          </p>
+          </span>
         </div>
       </div>
 
-      <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Stress Scenarios</h3>
-      <div className="overflow-x-auto mb-10">
-        <table className="min-w-full divide-y divide-slate-200 border border-slate-200 text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-2 text-left font-medium text-slate-500">Scenario</th>
-              <th className="px-4 py-2 text-right font-medium text-slate-500">Monthly Surplus</th>
-              <th className="px-4 py-2 text-right font-medium text-slate-500">Quarterly Surplus</th>
-              <th className="px-4 py-2 text-right font-medium text-slate-500">EMI</th>
-              <th className="px-4 py-2 text-right font-medium text-slate-500">Ratio</th>
-              <th className="px-4 py-2 text-center font-medium text-slate-500">Verdict</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-slate-100">
-            {repayability.stress_scenarios.map((sc, idx) => (
-              <tr key={idx}>
-                <td className="px-4 py-3 text-slate-800">{sc.scenario}</td>
-                <td className="px-4 py-3 text-right text-slate-600">{formatINR(sc.monthly_surplus)}</td>
-                <td className="px-4 py-3 text-right text-slate-600">{formatINR(sc.quarterly_surplus)}</td>
-                <td className="px-4 py-3 text-right text-slate-600">{formatINR(sc.quarterly_emi)}</td>
-                <td className="px-4 py-3 text-right text-slate-600">{formatRatio(sc.repayment_ratio)}</td>
-                <td className="px-4 py-3 text-center">
-                  <span className={`px-2 py-1 rounded text-xs font-medium border ${getVerdictColor(sc.verdict)}`}>
-                    {sc.verdict}
-                  </span>
-                </td>
+      {/* Stress Scenarios Table */}
+      <div className="space-y-3">
+        <h3 className="text-xs font-bold text-stone-500 uppercase tracking-wider">
+          Sensitivity Stress Test Scenarios
+        </h3>
+
+        <div className="overflow-x-auto rounded-xl border border-stone-200">
+          <table className="min-w-full divide-y divide-stone-200 text-xs">
+            <thead className="bg-stone-50 font-bold text-stone-600">
+              <tr>
+                <th className="px-4 py-3 text-left">Scenario</th>
+                <th className="px-4 py-3 text-right">Monthly Surplus</th>
+                <th className="px-4 py-3 text-right">Quarterly Surplus</th>
+                <th className="px-4 py-3 text-right">Quarterly EMI</th>
+                <th className="px-4 py-3 text-right">Burden Ratio</th>
+                <th className="px-4 py-3 text-center">Verdict</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-stone-100">
+              {repayability.stress_scenarios.map((sc, idx) => (
+                <tr key={idx} className="hover:bg-stone-50 transition-colors">
+                  <td className="px-4 py-3 font-bold text-stone-900">{sc.scenario}</td>
+                  <td className="px-4 py-3 text-right font-medium text-stone-700">{formatINR(sc.monthly_surplus)}</td>
+                  <td className="px-4 py-3 text-right font-medium text-stone-700">{formatINR(sc.quarterly_surplus)}</td>
+                  <td className="px-4 py-3 text-right font-medium text-stone-700">{formatINR(sc.quarterly_emi)}</td>
+                  <td className="px-4 py-3 text-right font-bold text-stone-900">{formatRatio(sc.repayment_ratio)}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`px-2.5 py-1 rounded text-[10px] font-bold border ${getVerdictColor(sc.verdict)}`}>
+                      {sc.verdict}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className={`p-5 rounded-lg border ${isWarning ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'}`}>
-        <h3 className="text-base font-semibold text-slate-800 mb-4">🔄 Modify & Recalculate / बदलें और पुनर्गणना करें</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      {/* Modify & Recalculate Panel */}
+      <div className={`p-6 rounded-2xl border ${isWarning ? 'bg-amber-50/80 border-amber-300' : 'bg-stone-50 border-stone-200'} space-y-4`}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-stone-900 flex items-center gap-2">
+            <span>🔄 Modify & Recalculate Advisory Plan</span>
+            <span className="text-xs font-semibold text-stone-500">/ बदलें और पुनर्गणना करें</span>
+          </h3>
+          <span className="text-xs text-stone-500">Adjust figures below to re-evaluate stress test</span>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Project Cost (₹)</label>
+            <label className="block text-xs font-bold text-stone-700 mb-1">Project Cost (₹)</label>
             <input 
               type="number" 
               name="project_cost" 
               value={modifyData.project_cost || ''} 
               onChange={handleChange}
-              className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 text-xs font-semibold bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 shadow-2xs"
             />
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Own Contribution (₹)</label>
+            <label className="block text-xs font-bold text-stone-700 mb-1">Own Contribution (₹)</label>
             <input 
               type="number" 
               name="own_contribution" 
               value={modifyData.own_contribution || ''} 
               onChange={handleChange}
-              className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 text-xs font-semibold bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 shadow-2xs"
             />
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Monthly Revenue (₹)</label>
+            <label className="block text-xs font-bold text-stone-700 mb-1">Monthly Revenue (₹)</label>
             <input 
               type="number" 
               name="expected_monthly_revenue" 
               value={modifyData.expected_monthly_revenue || ''} 
               onChange={handleChange}
-              className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 text-xs font-semibold bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 shadow-2xs"
             />
           </div>
+
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Monthly Expenses (₹)</label>
+            <label className="block text-xs font-bold text-stone-700 mb-1">Monthly Expenses (₹)</label>
             <input 
               type="number" 
               name="monthly_expenses" 
               value={modifyData.monthly_expenses || ''} 
               onChange={handleChange}
-              className="w-full px-2 py-1.5 text-sm border border-slate-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 text-xs font-semibold bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-700 shadow-2xs"
             />
           </div>
         </div>
-        <button
-          onClick={handleRecalculate}
-          disabled={isRecalculating}
-          className="w-full sm:w-auto px-6 py-2 bg-slate-800 text-white text-sm font-medium rounded hover:bg-slate-700 focus:outline-none disabled:opacity-70 flex justify-center items-center"
-        >
-          {isRecalculating ? 'Recalculating...' : 'Recalculate / पुनर्गणना'}
-        </button>
+
+        <div className="flex justify-end pt-2">
+          <button
+            onClick={handleRecalculate}
+            disabled={isRecalculating}
+            className="w-full sm:w-auto px-6 py-2.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold rounded-lg shadow-sm disabled:opacity-70 flex items-center justify-center gap-2 transition-colors"
+          >
+            {isRecalculating ? (
+              <span>Recalculating Advisory Plan...</span>
+            ) : (
+              <span>Recalculate Stress Test / पुनर्गणना</span>
+            )}
+          </button>
+        </div>
       </div>
+
     </div>
   );
 }

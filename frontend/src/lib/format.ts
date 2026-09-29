@@ -1,4 +1,5 @@
 export function formatINR(amount: number): string {
+  if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
@@ -7,49 +8,71 @@ export function formatINR(amount: number): string {
 }
 
 export function formatPercent(value: number): string {
+  if (value === undefined || value === null || isNaN(value)) return '0%';
   return `${value.toFixed(1)}%`;
 }
 
 export function formatRatio(value: number): string {
+  if (value === undefined || value === null || isNaN(value)) return '0%';
   return `${(value * 100).toFixed(1)}%`;
 }
 
 export function getVerdictColor(verdict: string): string {
   switch (verdict) {
-    case 'AFFORDABLE': return 'text-green-700 bg-green-50 border-green-200';
-    case 'CAUTION': return 'text-amber-700 bg-amber-50 border-amber-200';
-    case 'HIGH_RISK': return 'text-red-700 bg-red-50 border-red-200';
-    case 'NOT_VIABLE': return 'text-red-900 bg-red-100 border-red-300';
-    default: return 'text-slate-700 bg-slate-50 border-slate-200';
+    case 'AFFORDABLE': 
+      return 'text-emerald-900 bg-emerald-50/90 border-emerald-300 shadow-sm';
+    case 'CAUTION': 
+      return 'text-amber-900 bg-amber-50/90 border-amber-300 shadow-sm';
+    case 'HIGH_RISK': 
+      return 'text-red-900 bg-rose-50/90 border-rose-300 shadow-sm';
+    case 'NOT_VIABLE': 
+      return 'text-red-950 bg-red-100 border-red-400 shadow-sm';
+    default: 
+      return 'text-stone-800 bg-stone-100 border-stone-300';
   }
 }
 
 export function getVerdictLabel(verdict: string): string {
   switch (verdict) {
-    case 'AFFORDABLE': return '✅ Affordable / किफायती';
-    case 'CAUTION': return '⚠️ Caution / सावधानी';
-    case 'HIGH_RISK': return '❌ High Risk / उच्च जोखिम';
-    case 'NOT_VIABLE': return '🚫 Not Viable / व्यवहार्य नहीं';
+    case 'AFFORDABLE': return '✓ AFFORDABLE / किफायती';
+    case 'CAUTION': return '⚠ CAUTION / सावधानी';
+    case 'HIGH_RISK': return '✕ HIGH RISK / उच्च जोखिम';
+    case 'NOT_VIABLE': return '🚫 NOT VIABLE / व्यवहार्य नहीं';
     default: return verdict;
   }
 }
 
 export function getConfidenceBadge(confidence: string): string {
   switch (confidence) {
-    case 'VERIFIED': return 'bg-green-100 text-green-800 border-green-200';
-    case 'DERIVED': return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'ESTIMATED': return 'bg-amber-100 text-amber-800 border-amber-200';
-    case 'DEMO': return 'bg-purple-100 text-purple-800 border-purple-200';
-    case 'INSUFFICIENT_DATA': return 'bg-red-100 text-red-800 border-red-200';
-    default: return 'bg-slate-100 text-slate-800 border-slate-200';
+    case 'VERIFIED': 
+      return 'bg-emerald-100 text-emerald-800 border-emerald-300 font-semibold';
+    case 'DERIVED': 
+      return 'bg-sky-100 text-sky-800 border-sky-300 font-semibold';
+    case 'ESTIMATED': 
+      return 'bg-amber-100 text-amber-800 border-amber-300 font-semibold';
+    case 'DEMO': 
+      return 'bg-indigo-100 text-indigo-800 border-indigo-300 font-semibold';
+    case 'INSUFFICIENT_DATA': 
+      return 'bg-rose-100 text-rose-800 border-rose-300 font-semibold';
+    default: 
+      return 'bg-stone-100 text-stone-700 border-stone-300';
+  }
+}
+
+export function getRatingPill(rating: string): string {
+  switch (rating) {
+    case 'HIGH': return 'bg-emerald-100 text-emerald-800 border-emerald-200 font-semibold';
+    case 'MEDIUM': return 'bg-amber-100 text-amber-800 border-amber-200 font-semibold';
+    case 'LOW': return 'bg-rose-100 text-rose-800 border-rose-200 font-semibold';
+    default: return 'bg-stone-100 text-stone-700 border-stone-200';
   }
 }
 
 export function getRatingColor(rating: string): string {
   switch (rating) {
-    case 'HIGH': return 'text-green-700 font-medium';
-    case 'MEDIUM': return 'text-amber-700 font-medium';
-    case 'LOW': return 'text-red-700 font-medium';
-    default: return 'text-slate-700 font-medium';
+    case 'HIGH': return 'text-emerald-700 font-semibold';
+    case 'MEDIUM': return 'text-amber-700 font-semibold';
+    case 'LOW': return 'text-rose-700 font-semibold';
+    default: return 'text-stone-700 font-semibold';
   }
 }
